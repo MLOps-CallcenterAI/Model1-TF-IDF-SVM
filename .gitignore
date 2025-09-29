@@ -1,5 +1,5 @@
-.env
-dataset/
 .venv/
-.dvc/
 .vscode/
+.env
+dataset/*
+!dataset/*.dvc
