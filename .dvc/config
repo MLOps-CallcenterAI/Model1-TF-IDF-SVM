@@ -1,0 +1,8 @@
+[core]
+    autostage = true
+    remote = supabase_remote
+['remote "supabase_remote"']
+    url = s3://mlops-data/dvcstore
+    endpointurl = https://uoonhbhgfnbdrfaliuhy.storage.supabase.co/storage/v1/s3
+    access_key_id = 1d6171a57383d67880d488afb5b35636
+    secret_access_key = 78f95a6a884c59212ba79950500dd37abdd0cf8407e7802e468b9eb0b79380a9
