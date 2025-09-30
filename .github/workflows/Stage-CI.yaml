@@ -1,0 +1,16 @@
+name: Stage CI Pipeline
+
+on:
+  push:
+    branches: [main]
+
+
+jobs:
+  Lint:
+    uses: ./.github/workflows/lint.yaml
+
+  Test:
+    uses: ./.github/workflows/test.yaml
+
+  Build_and_Push:
+    uses: ./.github/workflows/build_and_push.yaml

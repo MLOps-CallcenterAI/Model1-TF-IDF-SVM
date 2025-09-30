@@ -1,2 +1,5 @@
 dvc
 dvc[s3]
+mlflow
+numpy
+sklearn 
