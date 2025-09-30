@@ -13,4 +13,5 @@ jobs:
     uses: ./.github/workflows/test.yaml
 
   Build_and_Push:
+    depends-on: [Lint, Test]
     uses: ./.github/workflows/build_and_push.yaml
