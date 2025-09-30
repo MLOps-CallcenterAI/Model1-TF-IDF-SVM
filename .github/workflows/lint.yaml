@@ -20,7 +20,7 @@ jobs:
           pip install black flake8 isort
 
       - name: Upload code
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: source-code
           path: .
@@ -31,7 +31,7 @@ jobs:
     needs: setup
     steps:
       - name: Download code
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: source-code
 
@@ -43,7 +43,7 @@ jobs:
     needs: setup
     steps:
       - name: Download code
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: source-code
 
@@ -55,7 +55,7 @@ jobs:
     needs: setup
     steps:
       - name: Download code
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: source-code
 
