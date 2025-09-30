@@ -3,3 +3,4 @@
 .env
 dataset/*
 !dataset/*.dvc
+__pycache__/
