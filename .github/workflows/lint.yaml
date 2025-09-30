@@ -1,6 +1,6 @@
 name: Lint
 
-on: [workflow]
+on: [workflow_call]
 
 jobs:
   lint:
