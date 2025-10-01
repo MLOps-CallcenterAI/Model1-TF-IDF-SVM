@@ -1,4 +1,7 @@
 dvc
 dvc[s3]
 mlflow
+pandas
 numpy
+scikit-learn
+nltk

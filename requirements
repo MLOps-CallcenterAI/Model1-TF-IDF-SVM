@@ -1,2 +1,5 @@
-mlflow
+pandas
 numpy
+scikit-learn
+mlflow
+nltk

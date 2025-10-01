@@ -4,3 +4,5 @@
 dataset/*
 !dataset/*.dvc
 __pycache__/
+mlruns/
+*.pyc
