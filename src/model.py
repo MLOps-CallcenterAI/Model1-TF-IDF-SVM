@@ -14,7 +14,6 @@ from sklearn.model_selection import (
     GridSearchCV,
     StratifiedKFold,
     cross_val_score,
-    train_test_split,
 )
 from sklearn.svm import LinearSVC
 
