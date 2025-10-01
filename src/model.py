@@ -10,11 +10,9 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import (
-    GridSearchCV,
-    StratifiedKFold,
-    cross_val_score,
-)
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score
 from sklearn.svm import LinearSVC
 
 # Download required NLTK data (run once)
