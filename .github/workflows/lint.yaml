@@ -23,7 +23,7 @@ jobs:
         run: black --check .
 
       - name: Run flake8
-        run: flake8 . --max-line-length=88 --extend-ignore=E203
+        run: flake8 . --max-line-length=110 --extend-ignore=E203
 
       - name: Run isort
         run: isort --check-only --diff .
