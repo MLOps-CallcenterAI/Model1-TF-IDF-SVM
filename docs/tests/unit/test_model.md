@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides comprehensive documentation for the unit tests implemented in `tests/unit/test_pipeline.py`. These tests validate the core functionality of the machine learning pipeline for text classification using TF-IDF vectorization and a Linear SVM classifier. The tests focus on data loading, preprocessing, model training, hyperparameter tuning via GridSearchCV, calibration, and cross-validation, while handling edge cases like minimal datasets.
+This document provides comprehensive documentation for the unit tests implemented in `tests/unit/test_model.py`. These tests validate the core functionality of the machine learning pipeline for text classification using TF-IDF vectorization and a Linear SVM classifier. The tests focus on data loading, preprocessing, model training, hyperparameter tuning via GridSearchCV, calibration, and cross-validation, while handling edge cases like minimal datasets.
 
 The tests use **Pytest** as the testing framework and rely on libraries such as **Pandas**, **NumPy**, **Scikit-learn**, **NLTK**, and **re** for execution. NLTK data (WordNet, Punkt, Stopwords) is downloaded automatically during test runs.
 
