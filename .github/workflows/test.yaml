@@ -8,8 +8,8 @@ jobs:
     environment: CallCenter-AI 
 
     env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ vars.DATABRICKS_TOKEN }}
       MODEL_URI: ${{ vars.MODEL_URI }}
       EXPERIMENT_NAME: ${{ vars.EXPERIMENT_NAME }}
 
