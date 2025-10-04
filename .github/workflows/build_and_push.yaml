@@ -9,14 +9,7 @@ on:
         required: true
 
 jobs:
-  get_version:
-    uses: ./.github/workflows/get_next_version.yaml
-    secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
   build_and_push:
-    needs: get_version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,24 +23,41 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Log the next Docker image version
+
+      - name: Get latest image version
+        id: get_latest_version
         run: |
-          echo "Next Docker image tag is: ${{ needs.get_version.outputs.next_tag }}"
+          IMAGE_NAME="medhedimaaroufi/callcenterai-svm"
+          # Get tags from Docker Hub API
+          LATEST_TAG=$(curl -s "https://hub.docker.com/v2/repositories/${IMAGE_NAME}/tags?page_size=100" \
+            | jq -r '.results[].name' \
+            | grep -E '^v1\.0\.[0-9]+$' \
+            | sort -V \
+            | tail -n1)
+          echo "Latest tag: $LATEST_TAG"
+          
+          if [[ -z "$LATEST_TAG" ]]; then
+            NEXT_TAG="v1.0.1"
+          else
+            # Extract the number after v1.0.
+            NUMBER=$(echo $LATEST_TAG | sed 's/v1\.0\.//')
+            NUMBER=$((NUMBER + 1))
+            NEXT_TAG="v1.0.$NUMBER"
+          fi
+          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+          echo "New image tag will be: $NEXT_TAG"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: |
-            medhedimaaroufi/callcenterai-svm:${{ needs.get_version.outputs.next_tag }}
-            medhedimaaroufi/callcenterai-svm:latest
+          tags: medhedimaaroufi/callcenterai-svm:${{ env.NEXT_TAG }}
 
       - name: Run Trivy security scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'medhedimaaroufi/callcenterai-svm:${{ needs.get_version.outputs.next_tag }}'
+          image-ref: 'medhedimaaroufi/callcenterai-svm:${{ env.NEXT_TAG }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
