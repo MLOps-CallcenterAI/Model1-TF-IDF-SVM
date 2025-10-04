@@ -24,7 +24,7 @@ jobs:
         with:
           repository: MLOps-CallcenterAI/Infrastructure-Configuration
           token: ${{ secrets.TOKEN }}
-          path: scripts
+          path: infrastructure
 
       # 2️⃣ Configure git
       - name: Set up git
@@ -35,13 +35,13 @@ jobs:
       # 3️⃣ Update version in config file
       - name: Update infrastructure version
         run: |
-          ls scripts
+          cd infrastructure
           ./scripts/update_image.sh ${{ inputs.filename }} ${{ inputs.image_version }}
 
       # 4️⃣ Commit and push
       - name: Commit and push changes
         run: |
-          cd scripts
+          cd infrastructure
           git add .
           git commit -m "Update image version to ${{ inputs.image_name }}:${{ inputs.image_version }}" || echo "No changes to commit"
           git push origin main
