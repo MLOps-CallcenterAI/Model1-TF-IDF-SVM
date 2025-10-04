@@ -12,9 +12,7 @@ jobs:
   get_next_version:
     runs-on: ubuntu-latest
     outputs:
-      next_tag:
-        description: 'Next Docker image tag'
-        value: ${{ steps.version.outputs.next_tag }}
+      next_tag: ${{ steps.version.outputs.next_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -40,8 +38,7 @@ jobs:
             NEXT_TAG="v1.0.$NUMBER"
           fi
           
-          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
           echo "Next image tag will be: $NEXT_TAG"
-          
-          # Set output for workflow_call
+
+          # Set the step output so the job output can reference it
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
