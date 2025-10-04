@@ -2,15 +2,15 @@ name: Get Latest Docker Image Version
 
 on:
   workflow_call:
+    outputs:
+      latest_tag:
+        description: "Latest Docker image tag"
+        value: ${{ jobs.get_tag.outputs.latest_tag }}
     secrets:
       DOCKER_USERNAME:
         required: true
       DOCKER_PASSWORD:
         required: true
-    outputs:
-      latest_tag:
-        description: 'The latest image tag from Docker Hub'
-        value: ${{ steps.version.outputs.latest_tag }}
 
 jobs:
   get_latest_version:

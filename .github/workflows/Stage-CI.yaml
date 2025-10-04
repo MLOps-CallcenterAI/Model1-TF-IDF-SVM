@@ -32,4 +32,4 @@ jobs:
       filename: "manifests/default/svm.yaml"
       image_version: ${{ needs.Get_Latest_Version.outputs.latest_tag }}
     secrets:
-      TOKEN: ${{ secrets.TOKEN }} 
+      TOKEN: ${{ secrets.TOKEN }}
