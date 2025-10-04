@@ -35,7 +35,7 @@ jobs:
       # 3️⃣ Update version in config file
       - name: Update infrastructure version
         run: |
-          ./update_image.sh ${{ inputs.filename }} ${{ inputs.image_version }}
+          ./scripts/update_image.sh ${{ inputs.filename }} ${{ inputs.image_version }}
 
       # 4️⃣ Commit and push
       - name: Commit and push changes

@@ -7,12 +7,14 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+    outputs:
+      latest_tag:
+        description: 'The latest image tag from Docker Hub'
+        value: ${{ steps.version.outputs.latest_tag }}
 
 jobs:
   get_latest_version:
     runs-on: ubuntu-latest
-    outputs:
-      latest_tag: ${{ steps.version.outputs.latest_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
