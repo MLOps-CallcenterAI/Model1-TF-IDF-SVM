@@ -5,8 +5,6 @@ on:
     outputs:
       next_tag:
         description: 'Next Docker image tag'
-        required: true
-        type: string
     secrets:
       DOCKER_USERNAME:
         required: true
