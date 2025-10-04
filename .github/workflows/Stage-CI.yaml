@@ -14,9 +14,13 @@ jobs:
 
   Build_and_Push:
     needs: [Lint, Test]
-    environment: CallCenter-AI
     uses: ./.github/workflows/build_and_push.yaml
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   
   Test_Secrets:
-    environment: CallCenter-AI
     uses: ./.github/workflows/test_secrets.yaml
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
