@@ -1,4 +1,4 @@
-name: Get Next Docker Image Version
+name: Get Latest Docker Image Version
 
 on:
   workflow_call:
@@ -9,10 +9,10 @@ on:
         required: true
 
 jobs:
-  get_next_version:
+  get_latest_version:
     runs-on: ubuntu-latest
     outputs:
-      next_tag: ${{ steps.version.outputs.next_tag }}
+      latest_tag: ${{ steps.version.outputs.latest_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -29,16 +29,6 @@ jobs:
             | sort -V \
             | tail -n1)
           echo "Latest tag: $LATEST_TAG"
-          
-          if [[ -z "$LATEST_TAG" ]]; then
-            NEXT_TAG="v1.0.1"
-          else
-            NUMBER=$(echo $LATEST_TAG | sed 's/v1\.0\.//')
-            NUMBER=$((NUMBER + 1))
-            NEXT_TAG="v1.0.$NUMBER"
-          fi
-          
-          echo "Next image tag will be: $NEXT_TAG"
 
           # Set the step output so the job output can reference it
-          echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
