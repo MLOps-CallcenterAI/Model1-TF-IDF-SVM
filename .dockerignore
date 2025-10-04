@@ -15,3 +15,6 @@ requirements.dev
 Dockerfile
 .dvcignore
 .git
+.pytest_cache
+src/__pycache__
+src/mlruns
