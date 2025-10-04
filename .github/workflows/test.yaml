@@ -30,8 +30,8 @@ jobs:
 
       - name: Create .env file for tests
         run: |
-          echo "url=${DATABRICKS_HOST}" > .env
-          echo "access_token=${DATABRICKS_TOKEN}" >> .env
+          echo "DATABRICKS_HOST=${DATABRICKS_HOST}" > .env
+          echo "DATABRICKS_TOKEN=${DATABRICKS_TOKEN}" >> .env
           echo "MODEL_URI=${MODEL_URI}" >> .env
           echo "EXPERIMENT_NAME=${EXPERIMENT_NAME}" >> .env
           echo "✅ .env file created for test environment"

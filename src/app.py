@@ -9,8 +9,9 @@ from pydantic import BaseModel
 # Load environment variables
 load_dotenv()
 
-DATABRICKS_HOST = os.getenv("url")
-DATABRICKS_TOKEN = os.getenv("access_token")
+DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
+DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOCKEN")
+MODEL_URI = os.getenv("MODEL_URI")
 
 if not DATABRICKS_HOST or not DATABRICKS_TOKEN:
     raise ValueError("Please set your Databricks HOST and TOKEN in the .env file")
@@ -22,9 +23,8 @@ os.environ["DATABRICKS_TOKEN"] = DATABRICKS_TOKEN
 mlflow.set_tracking_uri("databricks")
 
 # Load the model from Databricks
-model_uri = "models:/m-49e62ea546064bd1b56cff76a8aded2f"
-print(f"🔹 Loading model from URI: {model_uri} ...")
-model = mlflow.sklearn.load_model(model_uri)
+print(f"🔹 Loading model from URI: {MODEL_URI} ...")
+model = mlflow.sklearn.load_model(MODEL_URI)
 
 # Initialize FastAPI
 app = FastAPI(

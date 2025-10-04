@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 # %%
 load_dotenv()  # expects .env file with URL and token
 
-DATABRICKS_HOST = os.getenv("url")  # e.g., https://dbc-xxxx.cloud.databricks.com
-DATABRICKS_TOKEN = os.getenv("access_token")
+DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")  # e.g., https://dbc-xxxx.cloud.databricks.com
+DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
 
 if not DATABRICKS_HOST or not DATABRICKS_TOKEN:
     raise ValueError("Please set your Databricks HOST and TOKEN in the .env file")

@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 def setup_env():
     """Load environment variables and verify Databricks credentials"""
     load_dotenv()
-    host = os.getenv("url")
-    token = os.getenv("access_token")
+    host = os.getenv("DATABRICKS_HOST")
+    token = os.getenv("DATABRICKS_TOKEN")
 
     if not host or not token:
         pytest.skip("Databricks credentials are missing in .env file")
