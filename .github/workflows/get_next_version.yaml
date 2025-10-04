@@ -7,13 +7,14 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
-    outputs:
-      next_tag:
-        description: 'Next Docker image tag'
 
 jobs:
   get_next_version:
     runs-on: ubuntu-latest
+    outputs:
+      next_tag:
+        description: 'Next Docker image tag'
+        value: ${{ steps.version.outputs.next_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -42,5 +43,5 @@ jobs:
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
           echo "Next image tag will be: $NEXT_TAG"
           
-          # Set workflow output
+          # Set output for workflow_call
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
