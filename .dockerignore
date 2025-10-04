@@ -1,0 +1,17 @@
+.venv
+.dvc
+.github
+__pycache__
+.vscode
+dataset
+docs
+mlruns
+notebooks
+tests
+.env
+README.md
+requirements.dev
+.gitignore
+Dockerfile
+.dvcignore
+.git
