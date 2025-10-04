@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 # %%
 load_dotenv()  # expects .env file with URL and token
 
-DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
+DATABRICKS_HOST = os.getenv("DATABRICKS_HOST") 
 DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
 
 if not DATABRICKS_HOST or not DATABRICKS_TOKEN:
