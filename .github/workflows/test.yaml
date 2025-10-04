@@ -5,6 +5,7 @@ on: [workflow_call]
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: CallCenter-AI 
 
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
