@@ -1,0 +1,48 @@
+name: Get Next Docker Image Version
+
+on:
+  workflow_call:
+    outputs:
+      next_tag:
+        description: 'Next Docker image tag'
+        required: true
+        type: string
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
+jobs:
+  get_next_version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get latest image version
+        id: version
+        run: |
+          IMAGE_NAME="medhedimaaroufi/callcenterai-svm"
+          
+          # Get tags from Docker Hub API
+          LATEST_TAG=$(curl -s "https://hub.docker.com/v2/repositories/${IMAGE_NAME}/tags?page_size=100" \
+            | jq -r '.results[].name' \
+            | grep -E '^v1\.0\.[0-9]+$' \
+            | sort -V \
+            | tail -n1)
+          echo "Latest tag: $LATEST_TAG"
+          
+          if [[ -z "$LATEST_TAG" ]]; then
+            NEXT_TAG="v1.0.1"
+          else
+            NUMBER=$(echo $LATEST_TAG | sed 's/v1\.0\.//')
+            NUMBER=$((NUMBER + 1))
+            NEXT_TAG="v1.0.$NUMBER"
+          fi
+          
+          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+          echo "Next image tag will be: $NEXT_TAG"
+          
+          # Set output for workflow_call
+          echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
