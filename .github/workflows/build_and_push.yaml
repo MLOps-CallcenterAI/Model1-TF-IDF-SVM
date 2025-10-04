@@ -10,7 +10,7 @@ on:
 
 jobs:
   get_version:
-    uses: ./.github/workflows/get_next_version.yml
+    uses: ./.github/workflows/get_next_version.yaml
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
