@@ -36,6 +36,7 @@ jobs:
       - name: Update infrastructure version
         run: |
           cd infrastructure
+          chmod +x ./scripts/update_image.sh
           ./scripts/update_image.sh ${{ inputs.filename }} ${{ inputs.image_version }}
 
       # 4️⃣ Commit and push
