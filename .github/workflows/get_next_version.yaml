@@ -2,14 +2,14 @@ name: Get Next Docker Image Version
 
 on:
   workflow_call:
-    outputs:
-      next_tag:
-        description: 'Next Docker image tag'
     secrets:
       DOCKER_USERNAME:
         required: true
       DOCKER_PASSWORD:
         required: true
+    outputs:
+      next_tag:
+        description: 'Next Docker image tag'
 
 jobs:
   get_next_version:
@@ -42,5 +42,5 @@ jobs:
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
           echo "Next image tag will be: $NEXT_TAG"
           
-          # Set output for workflow_call
+          # Set workflow output
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
