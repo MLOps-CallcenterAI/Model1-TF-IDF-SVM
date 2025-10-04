@@ -14,7 +14,9 @@ jobs:
 
   Build_and_Push:
     needs: [Lint, Test]
+    environment: CallCenter-AI
     uses: ./.github/workflows/build_and_push.yaml
   
   Test_Secrets:
+    environment: CallCenter-AI
     uses: ./.github/workflows/test_secrets.yaml
