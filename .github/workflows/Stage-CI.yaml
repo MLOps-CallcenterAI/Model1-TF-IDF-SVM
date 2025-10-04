@@ -24,8 +24,6 @@ jobs:
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    outputs:
-      latest_tag: ${{ needs.Get_Latest_Version.outputs.latest_tag }}
 
   Deploy:
     needs: Get_Latest_Version
