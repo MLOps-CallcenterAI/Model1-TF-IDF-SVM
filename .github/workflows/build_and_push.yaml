@@ -24,28 +24,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: medhedimaaroufi/callcenterai-svm
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha
+      - name: Get commit number
+        id: commit_number
+        run: echo "COMMIT_NUMBER=$(git rev-list --count HEAD)" >> $GITHUB_ENV
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: medhedimaaroufi/callcenterai-svm:v1.0.${{ env.COMMIT_NUMBER }}
 
       - name: Run Trivy security scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'medhedimaaroufi/callcenterai-svm:latest'
+          image-ref: 'medhedimaaroufi/callcenterai-svm:v1.0.${{ env.COMMIT_NUMBER }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
