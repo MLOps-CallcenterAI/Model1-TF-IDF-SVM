@@ -4,3 +4,7 @@ scikit-learn
 nltk
 seaborn
 mlflow
+python-dotenv
+uv
+fastapi
+uvicorn

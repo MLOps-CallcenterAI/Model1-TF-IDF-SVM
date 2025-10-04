@@ -6,3 +6,7 @@ numpy
 scikit-learn
 nltk
 seaborn
+python-dotenv
+uv
+fastapi
+uvicorn
