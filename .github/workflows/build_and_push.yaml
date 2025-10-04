@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - name: Log the next Docker image version
-        run: echo "Next Docker image tag is: ${{ needs.get_version.outputs.next_tag }}"
+        run: echo 'Next Docker image tag is: ${{ needs.get_version.outputs.next_tag }}'
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
