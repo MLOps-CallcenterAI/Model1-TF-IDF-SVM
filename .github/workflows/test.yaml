@@ -5,20 +5,41 @@ on: [workflow_call]
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      MODEL_URI: ${{ vars.MODEL_URI }}
+      EXPERIMENT_NAME: ${{ vars.EXPERIMENT_NAME }}
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.dev
+          if [ -f requirements.dev ]; then pip install -r requirements.dev; fi
           pip install pytest
 
+      - name: Create .env file for tests
+        run: |
+          echo "url=${DATABRICKS_HOST}" > .env
+          echo "access_token=${DATABRICKS_TOKEN}" >> .env
+          echo "MODEL_URI=${MODEL_URI}" >> .env
+          echo "EXPERIMENT_NAME=${EXPERIMENT_NAME}" >> .env
+          echo "✅ .env file created for test environment"
+
+      - name: Mask secrets in logs
+        run: |
+          echo "🔒 Masking secrets..."
+          cat .env | sed 's/=.*/=********/' || true
+
       - name: Run unit tests
-        run: PYTHONPATH=. pytest tests/unit/ -v
+        run: |
+          PYTHONPATH=. pytest tests/unit/ -v --disable-warnings
