@@ -39,7 +39,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: medhedimaaroufi/callcenterai-svm:${{ needs.get_version.outputs.next_tag }}
+          tags: |
+            medhedimaaroufi/callcenterai-svm:${{ needs.get_version.outputs.next_tag }}
+            medhedimaaroufi/callcenterai-svm:latest
 
       - name: Run Trivy security scan
         uses: aquasecurity/trivy-action@master
