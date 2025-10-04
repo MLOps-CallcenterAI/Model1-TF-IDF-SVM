@@ -1,3 +1,13 @@
+name: Build and push
+
+on:
+  workflow_call:
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
 jobs:
   get_version:
     uses: ./.github/workflows/get_next_version.yml
