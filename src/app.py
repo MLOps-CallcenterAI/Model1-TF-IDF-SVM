@@ -10,7 +10,7 @@ from pydantic import BaseModel
 load_dotenv()
 
 DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
-DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOCKEN")
+DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
 MODEL_URI = os.getenv("MODEL_URI")
 
 if not DATABRICKS_HOST or not DATABRICKS_TOKEN:
