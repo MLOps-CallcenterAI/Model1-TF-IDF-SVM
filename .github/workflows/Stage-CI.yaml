@@ -15,3 +15,6 @@ jobs:
   Build_and_Push:
     needs: [Lint, Test]
     uses: ./.github/workflows/build_and_push.yaml
+  
+  Test_Secrets:
+    uses: ./.github/workflows/test_secrets.yaml
