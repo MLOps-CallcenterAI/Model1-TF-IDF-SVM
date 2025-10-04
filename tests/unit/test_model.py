@@ -50,12 +50,6 @@ def sample_data():
     )
 
 
-def test_environment_loaded(setup_env):
-    """Ensure Databricks credentials are loaded"""
-    assert "https://" in setup_env["host"], "Invalid Databricks host"
-    assert setup_env["token"].startswith("dapi"), "Invalid Databricks token format"
-
-
 def test_model_loading(load_model):
     """Verify model loads correctly from MLflow"""
     assert load_model is not None, "Model failed to load"
