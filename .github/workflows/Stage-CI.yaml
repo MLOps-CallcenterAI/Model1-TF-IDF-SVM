@@ -7,7 +7,6 @@ on:
 jobs:
 
   Get_Latest_Version:
-    needs: Build_and_Push
     uses: ./.github/workflows/get_latest_version.yaml
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
