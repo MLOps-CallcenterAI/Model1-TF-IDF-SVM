@@ -1,72 +1,242 @@
-# Data Cleaning and Training Model Documentation
+# 🧹 Clean & Train Notebook Documentation
 
-## Overview
-This Jupyter notebook performs data cleaning, exploratory data analysis, and prepares text data for machine learning model training. The dataset consists of support tickets with text documents and their corresponding topic groups.
+## 📁 Overview
 
-## Dataset Information
-- **File**: `all_tickets_processed_improved_v3.csv`
-- **Dimensions**: 47,837 rows × 2 columns
-- **Columns**:
-  - `Document`: Text content of support tickets
-  - `Topic_group`: Categorical labels for ticket classification
+This notebook handles **data exploration**, **text preprocessing**, **visual analysis**, and **training of a TF-IDF + SVM classifier** for ticket categorization.
+It also integrates **MLflow** for model tracking and Databricks experiment management.
 
-## Data Structure
-The dataset contains support tickets categorized into different topic groups:
-- Hardware
-- Access
-- Miscellaneous
-- ... (and other categories)
+---
 
-## Main Processes
+## ⚙️ 1. Setup & Imports
 
-### 1. Data Loading and Initial Setup
-- **Imports essential libraries**: pandas, matplotlib, seaborn, nltk
-- **Data loading**: Reads the CSV file containing processed support tickets
-- **Visualization setup**: Configures plotting styles and color palettes
+Main libraries used:
 
-### 2. Data Exploration
-- **Dataset overview**: Displays dimensions, column names, and first few rows
-- **General information**: Shows data types and memory usage
-- **Missing values analysis**: Confirms no null values in the dataset
+* **pandas**, **matplotlib**, **seaborn** → data handling & visualization
+* **nltk** → text cleaning, stopword removal, and lemmatization
+* **sklearn** → feature extraction, model training, and evaluation
+* **mlflow** → experiment tracking
+* **dotenv** → environment configuration for Databricks connection
 
-### 3. Data Visualization
-- **Category distribution**: Creates a horizontal bar chart showing the number of tickets per topic group
-- **Visual features**:
-  - Uses viridis color palette
-  - Displays exact count values on bars
-  - Professional formatting with clear labels and titles
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from collections import Counter
+import nltk
+from nltk.corpus import stopwords
+import string
+```
 
-### 4. Text Processing Preparation
-The notebook imports natural language processing tools including:
-- **NLTK stopwords**: For removing common words
-- **String processing**: For text cleaning operations
-- **Counter**: For frequency analysis of words
+The notebook loads:
 
-## Key Findings from Initial Analysis
+```python
+df = pd.read_csv("../dataset/all_tickets_processed_improved_v3.csv")
+```
 
-### Data Quality
-- **Complete dataset**: No missing values in either column
-- **Balanced representation**: Multiple categories with varying numbers of tickets
-- **Text data**: Documents contain processed support ticket text
+---
 
-### Category Distribution
-The visualization reveals:
-- Hardware and Access are major categories
-- Miscellaneous represents a smaller portion
-- Clear distribution patterns across different topic groups
+## 🧾 2. Dataset Overview
 
-## Purpose
-This notebook serves as the foundation for:
-1. **Text classification model training**
-2. **Natural language processing pipeline**
-3. **Support ticket categorization system**
-4. **Customer service automation**
+Displays dataset information:
 
-## Next Steps
-Based on the imports and initial analysis, the notebook is likely to proceed with:
-- Text preprocessing (tokenization, stopword removal, etc.)
-- Feature engineering (TF-IDF, word embeddings)
-- Model training for topic classification
-- Performance evaluation and validation
+```python
+df.shape, df.columns
+df.head()
+df.info()
+df.isnull().sum()
+```
 
-The comprehensive data exploration ensures the dataset is properly understood before building machine learning models for automated ticket categorization.
+These outputs allow checking:
+
+* Dataset dimensions
+* Missing values
+* Data type distribution
+
+---
+
+## 📊 3. Ticket Category Distribution
+
+Bar chart of ticket counts by category:
+
+```python
+topic_counts = df["Topic_group"].value_counts()
+sns.barplot(x=topic_counts.values, y=topic_counts.index, palette="viridis")
+```
+
+Pie chart of percentage distribution:
+
+```python
+plt.pie(
+    topic_counts.values,
+    labels=topic_counts.index,
+    autopct="%1.1f%%",
+    startangle=90,
+)
+```
+
+---
+
+## 📈 4. Descriptive Statistics
+
+Provides numeric and categorical summaries:
+
+* Total tickets
+* Number of unique categories
+* Most and least frequent categories
+* Percentage distribution per category
+
+---
+
+## 🧮 5. Document Length Analysis
+
+New column added:
+
+```python
+df["doc_length"] = df["Document"].str.len()
+```
+
+Two plots are produced:
+
+* **Boxplot** of document length by category
+* **Histogram** of overall document length distribution
+
+Followed by statistics on mean, median, max, and min lengths.
+
+---
+
+## 🗣️ 6. Frequent Words by Category
+
+Function `plot_top_words_category(category_name, top_n=20)`
+displays the top N most common non-stopwords for each category using NLTK stopword filtering.
+
+```python
+plot_top_words_category("Technical Support", top_n=20)
+```
+
+This helps identify topic-specific vocabulary.
+
+---
+
+## 📜 7. Summary & Recommendations
+
+The notebook prints a summary highlighting:
+
+* Dataset size & class balance
+* Average text length
+* Recommended preprocessing & model approaches
+
+**Recommendations include:**
+
+* Handling class imbalance if detected
+* Cleaning and normalizing text data
+* Using TF-IDF + SVM or Transformer models
+* Stratified cross-validation for fair evaluation
+
+---
+
+## 🧠 8. Preprocessing & Model Training
+
+### Load & Preprocess Function
+
+```python
+def load_data(dataset_path):
+    # text cleaning + lemmatization
+```
+
+Steps include:
+
+* Removing punctuation
+* Tokenizing and lemmatizing words
+* Removing stopwords (`english` + domain-specific ones like “please”, “ticket”, “help”)
+
+Output:
+
+```python
+X, y = load_data()
+```
+
+---
+
+## ⚙️ 9. TF-IDF + SVM Training
+
+Function `train_tfidf_svm(X, y)` performs:
+
+1. **TF-IDF vectorization**
+2. **GridSearchCV** for best SVM regularization parameter C
+3. **CalibratedClassifierCV** for probability calibration
+4. **5-fold Stratified cross-validation**
+
+Returns:
+
+```python
+model, vectorizer, y_true, y_pred, probs, cv_accuracy
+```
+
+---
+
+## 🧩 10. Model Evaluation
+
+Metrics computed:
+
+```python
+accuracy = accuracy_score(y_true, y_pred)
+f1 = f1_score(y_true, y_pred, average="weighted")
+```
+
+Prints:
+
+```
+✅ Accuracy: 0.XXXX
+✅ F1 Score: 0.XXXX
+✅ CV Accuracy: 0.XXXX
+```
+
+---
+
+## 🚀 11. MLflow Tracking (Databricks)
+
+Environment variables loaded from `.env`:
+
+```bash
+url=...
+access_token=...
+EXPERIMENT_NAME=...
+```
+
+Configuration:
+
+```python
+mlflow.set_tracking_uri("databricks")
+mlflow.set_experiment(EXPERIMENT_NAME)
+```
+
+Model version incremented automatically, and the run is logged with:
+
+* **Parameters:** model type, hyperparameters
+* **Metrics:** accuracy, F1, cross-validation accuracy
+* **Artifacts:** serialized model pipeline
+
+```python
+mlflow.sklearn.log_model(
+    pipeline,
+    artifact_path="tfidf_svm_model",
+    signature=signature,
+    input_example=input_example,
+    registered_model_name="workspace.default.tfidf_svm_classifier",
+)
+```
+
+---
+
+## 🧾 12. Key Outcomes
+
+| Component               | Description                                               |
+| ----------------------- | --------------------------------------------------------- |
+| **Dataset**             | All preprocessed tickets from v3                          |
+| **Model**               | TF-IDF + LinearSVC (Calibrated)                           |
+| **Vectorizer**          | n-gram (1,3), max_features=10000                          |
+| **Metrics**             | Accuracy, F1, CV Accuracy                                 |
+| **Experiment Tracking** | MLflow on Databricks                                      |
+| **Output**              | Registered model `workspace.default.tfidf_svm_classifier` |
+
+---

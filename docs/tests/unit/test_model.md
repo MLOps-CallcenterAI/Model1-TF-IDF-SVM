@@ -1,151 +1,126 @@
-# Unit Tests Documentation: ML Pipeline (TF-IDF + SVM)
+# 🧪 Test Suite: `test_model.py`
 
-## Overview
+## 📘 Overview
 
-This document provides comprehensive documentation for the unit tests implemented in `tests/unit/test_model.py`. These tests validate the core functionality of the machine learning pipeline for text classification using TF-IDF vectorization and a Linear SVM classifier. The tests focus on data loading, preprocessing, model training, hyperparameter tuning via GridSearchCV, calibration, and cross-validation, while handling edge cases like minimal datasets.
+This module contains automated tests for validating the **MLflow-based SVM model** used in the CallCenterAI project.
+It ensures that:
 
-The tests use **Pytest** as the testing framework and rely on libraries such as **Pandas**, **NumPy**, **Scikit-learn**, **NLTK**, and **re** for execution. NLTK data (WordNet, Punkt, Stopwords) is downloaded automatically during test runs.
+* Environment variables are correctly loaded.
+* The model can be successfully retrieved from Databricks MLflow.
+* Predictions are consistent and valid for multiple text inputs.
 
-Key functions tested:
-- **`load_data(dataset_path)`**: Loads a CSV dataset, preprocesses text (lowercasing, punctuation removal, tokenization, stopword removal, lemmatization), and returns features (`X`) and labels (`y`).
-- **`train_tfidf_svm(X, y)`**: Trains a TF-IDF vectorizer, performs GridSearchCV for SVM hyperparameters, calibrates the classifier, computes predictions and probabilities, and evaluates with cross-validation.
+The tests use **Pytest fixtures** for reusable setup steps such as environment loading, model fetching, and sample data generation.
 
-The test suite ensures:
-- Robustness against invalid inputs (e.g., missing columns).
-- Correct preprocessing and model outputs.
-- Graceful handling of small datasets (e.g., fewer than 2 samples per class, where CV is skipped or simplified).
+---
 
-All tests are self-contained, using temporary files for CSV data where needed, and clean up resources post-execution.
+## 🧩 Fixtures
 
-## Test Suite: `TestBasicFunctionality`
+### `setup_env`
 
-This class contains four unit tests covering success paths, basic training, minimal data scenarios, and error handling.
+**Purpose:**
+Loads Databricks credentials from the `.env` file and verifies that both `DATABRICKS_HOST` and `DATABRICKS_TOKEN` are present and valid.
+If credentials are missing, the tests are **skipped**.
 
-### 1. `test_load_data_success`
+**Returns:**
 
-**Description**:  
-Verifies that the `load_data` function successfully loads and preprocesses a valid CSV dataset with the required columns (`Document` and `Topic_group`). It tests text preprocessing, including stopword removal and lemmatization.
-
-**Test Data**:  
-- A temporary CSV file is created with 3 sample rows:  
-  | Document                  | Topic_group |
-  |---------------------------|-------------|
-  | Please help with my computer | Hardware   |
-  | Software is crashing      | Software   |
-  | Network is slow           | Network    |
-
-**Execution Steps**:  
-1. Create and write to a temporary CSV file.  
-2. Call `load_data(temp_file)` to load and preprocess.  
-3. Clean up the temporary file.
-
-**Assertions**:  
-- `X` and `y` are NumPy arrays.  
-- Length of `X` and `y` is 3.  
-- Preprocessing works: "please" (stopword) is removed from the first document; "computer" (key term) remains.
-
-**Expected Outcome**:  
-PASS – Confirms data loading and preprocessing integrity.
-
-**Edge Cases Covered**:  
-None (focuses on happy path).
-
-### 2. `test_train_tfidf_svm_basic`
-
-**Description**:  
-Tests the full `train_tfidf_svm` function with a balanced dataset (3 samples per class). Validates TF-IDF vectorization, GridSearchCV (with reduced params for testing), calibration, predictions, probabilities, and cross-validation. Ensures the model can make new predictions.
-
-**Test Data**:  
-- `X` (9 text samples): Balanced across classes with hardware/software/network themes.  
-  Example: `["computer not working hardware issue", "software application crash problem", ...]`  
-- `y` (9 labels): `["Hardware", "Software", "Network", ...]` (3 per class).
-
-**Execution Steps**:  
-1. Call `train_tfidf_svm(X, y)` with reduced settings (e.g., `ngram_range=(1,2)`, `max_features=1000`, `cv=2`).  
-2. Use the returned model to predict on a test sample: `["new hardware problem"]`.
-
-**Assertions**:  
-- Model and vectorizer are not `None`.  
-- `y_pred` length equals input length (9).  
-- `probabilities` length equals input length (9).  
-- CV accuracy is between 0 and 1.  
-- New predictions are generated successfully.
-
-**Expected Outcome**:  
-PASS – Ensures end-to-end training works with sufficient data.
-
-**Edge Cases Covered**:  
-- Balanced classes for safe CV (2-fold).
-
-### 3. `test_train_tfidf_svm_minimal_data`
-
-**Description**:  
-Tests `train_tfidf_svm` with an imbalanced, minimal dataset (1 sample for "Software" and "Network", 2 for "Hardware"). Validates fallback behavior: skips GridSearchCV and calibration if `<2` samples per class, uses basic SVM fit, sets CV accuracy to 0.0, and still produces predictions/probabilities.
-
-**Test Data**:  
-- `X` (4 text samples):  
-  `["computer hardware", "software program", "network connection", "hardware problem"]`  
-- `y` (4 labels): `["Hardware", "Software", "Network", "Hardware"]`.
-
-**Execution Steps**:  
-1. Call `train_tfidf_svm(X, y)`.  
-   - Detects `min_samples_per_class=1` → Uses basic `LinearSVC` fit (no GridSearchCV/calibration).  
-   - Probabilities from `decision_function` (not calibrated `predict_proba`).  
-   - Skips CV (sets `cv_accuracy=0.0`).  
-2. Vectorization uses reduced settings.
-
-**Assertions**:  
-- Model and vectorizer are not `None`.  
-- `y_pred` length equals input length (4).
-
-**Expected Outcome**:  
-PASS – Demonstrates robustness for production edge cases with sparse data.
-
-**Edge Cases Covered**:  
-- Imbalanced classes (`min_samples_per_class < 2`).  
-- No CV or calibration to avoid errors.
-
-### 4. `test_load_data_missing_columns`
-
-**Description**:  
-Ensures `load_data` raises a `ValueError` when the CSV lacks required columns (`Document` or `Topic_group`).
-
-**Test Data**:  
-- A temporary CSV file with invalid columns:  
-  | Wrong_Column | Another_Column |
-  |--------------|----------------|
-  | test data    | test label     |
-
-**Execution Steps**:  
-1. Create and write to a temporary CSV file.  
-2. Attempt `load_data(temp_file)` and catch the exception.  
-3. Clean up the temporary file.
-
-**Assertions**:  
-- Raises `ValueError` with message matching: `"must contain 'Document' and 'Topic_group' columns"`.
-
-**Expected Outcome**:  
-PASS – Validates input validation and error handling.
-
-**Edge Cases Covered**:  
-- Malformed dataset structure.
-
-## Running the Tests
-
-Execute with:  
-```bash
-PYTHONPATH=. pytest tests/unit/ -v
+```python
+{"host": <str>, "token": <str>}
 ```
 
-- **Platform**: Linux (tested with Python 3.12.3, Pytest 8.4.2).  
-- **Dependencies**: Handled via virtual environment (e.g., `.venv`).  
-- **Output**: Verbose mode (`-v`) shows progress; all tests should PASS without warnings.  
-- **Warnings**: May include scikit-learn deprecation notes (e.g., `cv='prefit'`), but do not affect results.
+---
 
-## Coverage and Limitations
+### `load_model`
 
-- **Coverage**: Focuses on unit-level (functions); integration tests (e.g., full MLflow run) are out of scope.  
-- **Limitations**: Tests use synthetic data; real dataset (`all_tickets_processed_improved_v3.csv`) is mocked. Reduced hyperparameters speed up runs but may differ from production.  
-- **Future Enhancements**: Add tests for MLflow logging, signature inference, and larger datasets.
+**Purpose:**
+Initializes the MLflow tracking URI, then loads the deployed **SVM text classification model** from the specified `model_uri`.
 
-For issues, refer to the test file or scikit-learn docs on CV constraints.
+**Depends on:**
+`setup_env`
+
+**Returns:**
+A scikit-learn model object with a `.predict()` method.
+
+---
+
+### `sample_data`
+
+**Purpose:**
+Provides a small, realistic dataset of text-based inputs for testing model inference.
+
+**Returns:**
+A pandas DataFrame with one column:
+
+```python
+{"text": ["cannot login to my account", ...]}
+```
+
+---
+
+## 🧠 Tests
+
+### ✅ `test_environment_loaded(setup_env)`
+
+**Goal:**
+Ensures that the `.env` file was correctly read and that the Databricks credentials are properly formatted.
+
+**Assertions:**
+
+* `DATABRICKS_HOST` must contain `"https://"`.
+* `DATABRICKS_TOKEN` must start with `"dapi"` (standard Databricks token prefix).
+
+---
+
+### ✅ `test_model_loading(load_model)`
+
+**Goal:**
+Verifies that the model is successfully retrieved from MLflow.
+
+**Assertions:**
+
+* The loaded object is not `None`.
+* The loaded object has a `.predict` method.
+
+---
+
+### ✅ `test_model_prediction(load_model, sample_data)`
+
+**Goal:**
+Checks the integrity and structure of predictions generated by the model.
+
+**Assertions:**
+
+* Predictions are iterable (list, tuple, Series, or ndarray).
+* The number of predictions matches the number of inputs.
+* Each prediction is either a string or integer label.
+
+---
+
+## 🧰 Technologies & Dependencies
+
+* **pytest** — for testing and fixtures
+* **mlflow** — for model loading from Databricks
+* **pandas** — for structured input data
+* **dotenv** — for managing environment variables
+
+---
+
+## 🧾 Notes
+
+* The model URI is currently hardcoded as:
+
+  ```
+  models:/m-49e62ea546064bd1b56cff76a8aded2f
+  ```
+
+  To make it dynamic, you may load it from the `.env` file using:
+
+  ```python
+  model_uri = os.getenv("MODEL_URI")
+  ```
+* Ensure your `.env` contains valid:
+
+  ```
+  DATABRICKS_HOST=<your-host>
+  DATABRICKS_TOKEN=<your-token>
+  ```
+---
