@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-# Load environment variables
 load_dotenv()
 
 DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
